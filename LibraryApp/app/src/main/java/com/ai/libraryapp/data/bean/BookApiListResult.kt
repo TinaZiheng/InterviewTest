@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 @Keep
 data class BookApiListResult(
     @Json(name = "count")
-    val isEnd: Int = 0,
+    val isEnd: Boolean = false,
     @Json(name = "results")
     val results: List<Book> = listOf()
 )

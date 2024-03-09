@@ -7,7 +7,7 @@ import com.ai.libraryapp.data.bean.HttpResult
 import kotlinx.coroutines.flow.Flow
 
 interface BookApiRepository {
-    suspend fun getBookList(page: Int, size: Int = 20) : Flow<ApiResult<HttpResult<BookApiListResult>>>
+    suspend fun getBookList(page: Int, size: Int = 20) : HttpResult<BookApiListResult>
     suspend fun addBook(book: Book) : Flow<ApiResult<HttpResult<Book>>>
     suspend fun getBookById(id: Long) : Flow<ApiResult<HttpResult<Book>>>
     suspend fun updateBook(id: Long, book: Book) : Flow<ApiResult<HttpResult<Book>>>

@@ -70,6 +70,9 @@ dependencies {
     // Moshi
     implementation(libs.bundles.moshi)
 
+    // Paging
+    implementation(libs.paging.compose)
+
     // viewModel()
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 

@@ -16,13 +16,8 @@ class BookApiRepositoryIml @Inject constructor(
     override suspend fun getBookList(
         page: Int,
         size: Int
-    ): Flow<ApiResult<HttpResult<BookApiListResult>>> = flow {
-        try {
-            val result = bookApiService.getBookListApi(page, size)
-            emit(ApiResult.Success(result))
-        } catch (e: Exception) {
-            emit(ApiResult.Error(Throwable(e.message)))
-        }
+    ): HttpResult<BookApiListResult> {
+        return bookApiService.getBookListApi(page, size)
     }
 
     override suspend fun addBook(book: Book): Flow<ApiResult<HttpResult<Book>>> = flow {

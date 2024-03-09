@@ -25,6 +25,9 @@ hilt-compiler-navigation-compose = "1.1.0"
 moshi-kotlin = "1.15.0"
 moshi-converter-retrofit = "2.9.0"
 
+# Paging
+paging-compose = "3.2.1"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -48,6 +51,9 @@ okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-intercepto
 # Moshi
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi-kotlin" }
 moshi-converter-retrofit = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "moshi-converter-retrofit" }
+
+# Paging
+paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging-compose" }
 
 # Retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
