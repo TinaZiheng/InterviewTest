@@ -11,7 +11,7 @@ public class Book {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int Id;
+	private long id;
 	
 	@Column
 	private String name;
@@ -19,12 +19,12 @@ public class Book {
 	@Column
 	private String remark;
 	
-	public int getId() {
-		return Id;
+	public long getId() {
+		return id;
 	}
 	
 	public void setId(int id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getName() {
@@ -45,7 +45,7 @@ public class Book {
 
 	public Book(int id, String name, String remark) {
 		super();
-		Id = id;
+		this.id = id;
 		this.name = name;
 		this.remark = remark;
 	}

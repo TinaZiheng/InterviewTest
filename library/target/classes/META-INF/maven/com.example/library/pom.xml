@@ -34,10 +34,12 @@
         </dependency>
         
         <!-- MySQL -->
-        <!--<dependency>
+       <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-        </dependency>-->
+            <version>8.0.33</version>
+            <scope>runtime</scope>
+        </dependency>
 	</dependencies>
 
 	<build>
