@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -112,7 +111,7 @@ fun BookEditor(viewModel: CreateBookViewModel = hiltViewModel()) {
             Text(text = "Submit")
         }
 
-        LoadingDialog(isLoading = loading)
+        LoadingDialog(isLoading = loading, "Submitting")
     }
 }
 

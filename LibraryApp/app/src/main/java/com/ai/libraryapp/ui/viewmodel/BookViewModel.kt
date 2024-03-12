@@ -51,15 +51,17 @@ class BookViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = repository.getBookList(currentPage, 20)
-                Log.d("BookViewModel","page=$currentPage isEnd=${response.data.isEnd}")
+                Log.d("BookViewModel","page=$currentPage isEnd=${response.data?.isEnd}")
                 if (response.code >= 0) {
                     if (currentPage == 0) {
                         _items.value = mutableListOf()
                     }
                     _items.value = (_items.value ?: mutableListOf()).apply {
-                        addAll(response.data.results)
+                        response.data?.results?.let {
+                            addAll(it)
+                        }
                     }
-                    _isEnd.value = response.data.isEnd
+                    _isEnd.value = response.data?.isEnd
                     currentPage++
                     _loadState.value = LoadState.Complete
                 } else {
@@ -139,10 +141,14 @@ class BookViewModel @Inject constructor(
                     _loading.value = false
                     when(result) {
                         is ApiResult.Success -> {
-                            _searchBook.value = result.data.data
+                            if (result.data.code < 0) {
+                                _toastMsg.value = result.data.msg
+                            } else {
+                                _searchBook.value = result.data.data
+                            }
                         }
                         is ApiResult.Error -> {
-                            _toastMsg.value = "Delete error : ${result.exception.toString()}"
+                            _toastMsg.value = "error : ${result.exception.toString()}"
                         }
                     }
 

@@ -62,10 +62,12 @@ public class BookController {
 				ResponseResult<Book> result = new ResponseResult<Book>(0, "", tutorialData.get());
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				ResponseResult<Book> result = new ResponseResult<Book>(-99, "The book is not exist", null);
+				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
 		} catch(Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			ResponseResult<Book> result = new ResponseResult<Book>(-99, "The book is not exist", null);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
 	

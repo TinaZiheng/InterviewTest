@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,11 +56,11 @@ fun BookList(viewModel: BookViewModel = hiltViewModel(),
             }
         }
     } else {
-        LazyColumn {
+        LazyColumn (modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp)){
             items(count = items.size) { index ->
                 val item = items[index]
                 bookItem(item, onDelClick, onEditClick)
-
+                Divider()
             }
             if (loadState == LoadState.Loading) {
                 item {
@@ -146,14 +147,15 @@ fun BookList(viewModel: BookViewModel = hiltViewModel(),
 fun bookItem(bookItem: Book?,
              onDelClick: (book: Book)-> Unit,
              onEditClick: (book: Book) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp), horizontalArrangement = Arrangement.SpaceBetween) {
         Column {
             Text(
-                text = "${bookItem?.name}",
+                text = "name:   ${bookItem?.name}",
                 textAlign = TextAlign.Center
             )
+            Spacer(modifier = Modifier.padding(top = 10.dp))
             Text(
-                text = "${bookItem?.remark}",
+                text = "remark: ${bookItem?.remark}",
                 textAlign = TextAlign.Center
             )
         }

@@ -10,5 +10,5 @@ data class HttpResult<T>(
     @Json(name = "msg")
     val msg: String,
     @Json(name = "data")
-    val data: T
+    val data: T?
 )

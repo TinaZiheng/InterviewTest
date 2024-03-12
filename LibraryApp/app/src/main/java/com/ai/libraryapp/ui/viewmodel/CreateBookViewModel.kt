@@ -49,7 +49,9 @@ class CreateBookViewModel @Inject constructor(
                         _loading.value = false
                         when(result) {
                             is ApiResult.Success -> {
-                                EventBus.getDefault().post(BookUpdateEvent(BookUpdateType.UPDATE, result.data.data))
+                                result.data.data?.let {
+                                    EventBus.getDefault().post(BookUpdateEvent(BookUpdateType.UPDATE, it))
+                                }
                                 _toastMsg.value = "Update success"
                                 _finishActivity.value = true
                             }
@@ -63,7 +65,9 @@ class CreateBookViewModel @Inject constructor(
                         _loading.value = false
                         when(result) {
                             is ApiResult.Success -> {
-                                EventBus.getDefault().post(BookUpdateEvent(BookUpdateType.ADD, result.data.data))
+                                result.data.data?.let {
+                                    EventBus.getDefault().post(BookUpdateEvent(BookUpdateType.ADD, it))
+                                }
                                 _toastMsg.value = "Add success"
                                 _finishActivity.value = true
                             }
