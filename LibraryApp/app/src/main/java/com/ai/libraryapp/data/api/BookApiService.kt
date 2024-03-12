@@ -7,14 +7,15 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface BookApiService {
-    @GET("list")
+    @GET("bookList/{page}/{size}")
     suspend fun getBookListApi(
-        @Query("page") page: Int,
-        @Query("size") size: Int = 20
+        @Path("page") page: Int,
+        @Path("size") size: Int = 20
     ): HttpResult<BookApiListResult>
 
     @POST("addBook")
@@ -22,12 +23,12 @@ interface BookApiService {
         @Body book: Book
     ): HttpResult<Book>
 
-    @GET("getBook")
+    @GET("getBook/{id}")
     suspend fun getBookById(
-        @Query("id") id: Long
+        @Path("id") id: Long
     ): HttpResult<Book>
 
-    @GET("updateBook/{id}")
+    @PUT("updateBook/{id}")
     suspend fun updateBook(
         @Path("id") id: Long,
         @Body book: Book

@@ -1,5 +1,9 @@
 package com.example.library.model;
 
+import javax.validation.constraints.NotBlank;
+
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,9 +18,12 @@ public class Book {
 	private long id;
 	
 	@Column
+	@NotBlank(message = "the name of the book must not be empty")
+	@Length(min=1, max = 255)
 	private String name;
 	
 	@Column
+	@Length(max = 255)
 	private String remark;
 	
 	public long getId() {
@@ -36,7 +43,7 @@ public class Book {
 	}
 	
 	public String getRemark() {
-		return name;
+		return remark;
 	}
 
 	public void setRemark(String remark) {
