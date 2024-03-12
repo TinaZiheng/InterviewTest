@@ -50,7 +50,7 @@ class BookViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val response = repository.getBookList(currentPage, 20)
+                val response = repository.getBookList(currentPage, 10)
                 Log.d("BookViewModel","page=$currentPage isEnd=${response.data?.isEnd}")
                 if (response.code >= 0) {
                     if (currentPage == 0) {
@@ -117,6 +117,9 @@ class BookViewModel @Inject constructor(
                         _searchBook.value = null
                     }
                     _items.value?.remove(book)
+                    _items.value = mutableListOf<Book>().apply {
+                        addAll(items.value!!)
+                    }
                 }
                 is ApiResult.Error -> {
                     _toastMsg.value = "Delete error : ${result.exception}"
@@ -158,15 +161,24 @@ class BookViewModel @Inject constructor(
     }
 
     fun addBook(book: Book) {
-        (_items.value ?: mutableListOf()).apply {
-            add(0, book)
+        _items.value = mutableListOf<Book>().apply {
+            add(book)
+            items.value?.let {
+                addAll(it)
+            }
         }
+
     }
 
     fun updateBook(book: Book) {
-       (_items.value?.find { it.id == book.id })?.apply {
-           name = book.name
-           remark = book.remark
-       }
+        val index = items.value?.indexOfFirst { it.id == book.id }
+        if (index != null && index >= 0) {
+            val items = mutableListOf<Book>().apply {
+                addAll(items.value!!)
+                removeAt(index)
+                add(index, book)
+            }
+            _items.value = items
+        }
     }
 }

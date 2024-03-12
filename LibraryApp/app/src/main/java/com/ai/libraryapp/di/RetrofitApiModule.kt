@@ -41,7 +41,7 @@ object RetrofitApiModule {
         moshi: Moshi,
         okHttpClient: OkHttpClient,
     ) : BookApiService = Retrofit.Builder()
-        .baseUrl("http://192.168.10.2:8080/api/")
+        .baseUrl("http://119.23.255.112/api/")
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .client(okHttpClient)
         .build()
