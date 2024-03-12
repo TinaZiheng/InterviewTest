@@ -13,7 +13,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -42,7 +41,7 @@ object RetrofitApiModule {
         moshi: Moshi,
         okHttpClient: OkHttpClient,
     ) : BookApiService = Retrofit.Builder()
-        .baseUrl("http://192.168.10.7:8080/api/")
+        .baseUrl("http://192.168.10.2:8080/api/")
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .client(okHttpClient)
         .build()

@@ -1,19 +1,14 @@
 package com.ai.libraryapp.ui.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
-import androidx.paging.cachedIn
 import com.ai.libraryapp.data.ApiResult
 import com.ai.libraryapp.data.bean.Book
 import com.ai.libraryapp.data.repository.BookApiRepository
+import com.ai.libraryapp.ui.state.LoadState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,38 +26,83 @@ class BookViewModel @Inject constructor(
     private val _searchBook = MutableLiveData<Book>()
     val searchBook: LiveData<Book> = _searchBook
 
-    val items: MutableList <Book> = mutableStateListOf()
+    //data list
+    private val _items = MutableLiveData<MutableList<Book>>()
+    val items: LiveData<MutableList<Book>> get() = _items
+    private var currentPage = 0
+    private val _loadState = MutableLiveData<LoadState>()
+    val loadState: LiveData<LoadState> = _loadState
+    private val _isEnd = MutableLiveData<Boolean>()
+    val isEnd: LiveData<Boolean> = _isEnd
 
-    private val pagerConfig = PagingConfig(
-        pageSize = 20,
-        initialLoadSize = 20
-    )
-    val pager by lazy {
-        Pager(
-            config = pagerConfig,
-            initialKey = 0,
-            pagingSourceFactory = {
-                object : PagingSource<Int, Book>() {
-                    override fun getRefreshKey(state: PagingState<Int, Book>): Int? {
-                        return state.anchorPosition
-                    }
-
-                    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
-                        return try {
-                            val page = params.key ?: 0
-                            val pageSize = params.loadSize
-                            val response = repository.getBookList(page, pageSize)
-                            val nextPage = if (response.data.isEnd) null else page + 1
-                            Log.d("BookViewModel","page=$page size=$pageSize isEnd=${response.data.isEnd}")
-                            LoadResult.Page(response.data.results, null, nextPage)
-                        } catch (e: Exception) {
-                            LoadResult.Error(e)
-                        }
-                    }
-                }
-            }
-        ).flow.cachedIn(viewModelScope)
+    init {
+        loadNextPage()
     }
+
+    fun loadNextPage() {
+        //no more data
+        if (currentPage >=1 && isEnd.value == true) {
+            return
+        }
+        if (loadState.value == LoadState.Loading) return
+
+        _loadState.value = LoadState.Loading
+
+        viewModelScope.launch {
+            try {
+                val response = repository.getBookList(currentPage, 20)
+                Log.d("BookViewModel","page=$currentPage isEnd=${response.data.isEnd}")
+                if (response.code >= 0) {
+                    if (currentPage == 0) {
+                        _items.value = mutableListOf()
+                    }
+                    _items.value = (_items.value ?: mutableListOf()).apply {
+                        addAll(response.data.results)
+                    }
+                    _isEnd.value = response.data.isEnd
+                    currentPage++
+                    _loadState.value = LoadState.Complete
+                } else {
+                    _toastMsg.value = "load error"
+                    _loadState.value = LoadState.Error
+                }
+            } catch (e: Exception) {
+                _toastMsg.value = "load error:$e"
+                _loadState.value = LoadState.Error
+            }
+        }
+    }
+
+//    private val pagerConfig = PagingConfig(
+//        pageSize = 20,
+//        initialLoadSize = 20
+//    )
+//    val pager by lazy {
+//        Pager(
+//            config = pagerConfig,
+//            initialKey = 0,
+//            pagingSourceFactory = {
+//                object : PagingSource<Int, Book>() {
+//                    override fun getRefreshKey(state: PagingState<Int, Book>): Int? {
+//                        return state.anchorPosition
+//                    }
+//
+//                    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
+//                        return try {
+//                            val page = params.key ?: 0
+//                            val pageSize = params.loadSize
+//                            val response = repository.getBookList(page, pageSize)
+//                            val nextPage = if (response.data.isEnd) null else page + 1
+//                            Log.d("BookViewModel","page=$page size=$pageSize isEnd=${response.data.isEnd}")
+//                            LoadResult.Page(response.data.results, null, nextPage)
+//                        } catch (e: Exception) {
+//                            LoadResult.Error(e)
+//                        }
+//                    }
+//                }
+//            }
+//        ).flow.cachedIn(viewModelScope)
+//    }
 
     fun deleteProduct(book: Book) = viewModelScope.launch {
         _loading.value = true
@@ -70,12 +110,14 @@ class BookViewModel @Inject constructor(
             _loading.value = false
             when(result) {
                 is ApiResult.Success -> {
-                    items.remove(book)
                     _toastMsg.value = "Delete success"
-                    _searchBook.value = null
+                    if (_searchBook.value?.id == book.id) {
+                        _searchBook.value = null
+                    }
+                    _items.value?.remove(book)
                 }
                 is ApiResult.Error -> {
-                    _toastMsg.value = "Delete error : ${result.exception.toString()}"
+                    _toastMsg.value = "Delete error : ${result.exception}"
                 }
             }
 
@@ -110,12 +152,15 @@ class BookViewModel @Inject constructor(
     }
 
     fun addBook(book: Book) {
-        items.add(0, book)
+        (_items.value ?: mutableListOf()).apply {
+            add(0, book)
+        }
     }
 
     fun updateBook(book: Book) {
-        val oldBook = items.find { it ->  book.id == it.id}
-        oldBook?.name = book.name
-        oldBook?.remark = book.remark
+       (_items.value?.find { it.id == book.id })?.apply {
+           name = book.name
+           remark = book.remark
+       }
     }
 }

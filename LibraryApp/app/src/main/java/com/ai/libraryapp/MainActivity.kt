@@ -27,10 +27,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -47,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ai.libraryapp.ui.event.BookUpdateEvent
+import com.ai.libraryapp.ui.event.BookUpdateType
 import com.ai.libraryapp.ui.screen.BookList
 import com.ai.libraryapp.ui.screen.bookItem
 import com.ai.libraryapp.ui.theme.LibraryAppTheme
@@ -88,7 +87,11 @@ class MainActivity : ComponentActivity() {
     @Subscribe
     fun onMessageEvent(event: BookUpdateEvent) {
         Log.d("MainActivity", "Message received: ${event.type}")
-        // Handle the event here
+        if (event.type == BookUpdateType.ADD) {
+            viewModel.addBook(event.book)
+        } else {
+            viewModel.updateBook(event.book)
+        }
     }
 }
 
